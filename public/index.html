@@ -3,272 +3,146 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IA Clost</title>
+  <title>IA Clost — Lobby</title>
   <meta name="description" content="Chat con IA, generador de imágenes y panel de administración." />
   <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #121b2d;
-      --panel-2: #18253d;
-      --text: #edf2ff;
-      --muted: #a4b0c4;
-      --accent: #3ec6ff;
-      --accent-2: #8b5cf6;
-      --success: #3dd598;
-      --danger: #ff5e7d;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 15px 35px rgba(0,0,0,0.25);
-    }
-
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: linear-gradient(180deg, #09111d, #0e1729 25%, #0d1420); color: var(--text); }
-    body { padding: 28px; }
-    a { color: var(--accent); }
-    .shell {
-      max-width: 1100px; margin: 0 auto;
-      background: rgba(10,16,28,0.9); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    header {
-      display: flex; align-items: center; justify-content: space-between; gap: 18px;
-      padding: 22px 26px; border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-    }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 0.02em; }
-    .logo {
-      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #04111d; font-weight: 900;
-    }
-    nav { display: flex; gap: 12px; align-items: center; }
-    .pill {
-      border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--text);
-      padding: 10px 14px; border-radius: 999px; font-weight: 600; cursor: pointer;
-    }
-    .pill.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #04111d; border: none;
-    }
-    main { padding: 28px 26px 40px; }
-    .hero {
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; align-items: center;
-      margin-bottom: 30px;
-    }
-    .hero-copy h1 {
-      margin: 0 0 16px; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.08; letter-spacing: -0.05em;
-    }
-    .hero-copy p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-    .card {
-      background: linear-gradient(180deg, rgba(22,31,47,0.96), rgba(18,27,45,0.96));
-      border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow);
-    }
-    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-    .stat { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .stat b { display: block; font-size: 1.6rem; margin-bottom: 4px; }
-    .stat span { color: var(--muted); font-size: 0.92rem; }
-
-    .grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; margin-top: 28px; }
-    .panel { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-    .panel h3 { margin: 0 0 14px; }
-    .chat-box {
-      height: 260px; overflow: auto; background: rgba(3,7,18,0.7); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .msg { max-width: 85%; padding: 10px 12px; border-radius: 12px; line-height: 1.5; }
-    .msg.user { background: rgba(62,198,255,0.12); border: 1px solid rgba(62,198,255,0.4); align-self: flex-end; }
-    .msg.bot { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.35); align-self: flex-start; }
-    textarea, input[type=text] {
-      width: 100%; border: 1px solid var(--border); background: rgba(8,12,20,0.78); color: var(--text); border-radius: 12px; padding: 12px 14px; margin-top: 12px; font: inherit;
-    }
-    .row { display: flex; gap: 10px; margin-top: 12px; }
-    .btn {
-      border: none; cursor: pointer; padding: 11px 16px; border-radius: 12px; font-weight: 700; font: inherit;
-    }
-    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #03111d; }
-    .btn.secondary { background: rgba(255,255,255,0.03); color: var(--text); border: 1px solid var(--border); }
-    .quota-box {
-      border: 1px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 16px; background: rgba(255,255,255,0.02);
-      margin-top: 12px;
-    }
-    ul { margin: 10px 0 0 18px; color: var(--muted); line-height: 1.7; }
-    .mini-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-    .image-preview { min-height: 180px; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(135deg, rgba(62,198,255,0.1), rgba(139,92,246,0.1)); display: grid; place-items: center; color: var(--muted); }
-    .image-preview img { max-width: 100%; border-radius: 12px; max-height: 240px; object-fit: cover; }
-    .muted { color: var(--muted); }
-    @media (max-width: 860px) {
-      body { padding: 16px; }
-      .hero, .grid { grid-template-columns: 1fr; }
-      header { flex-wrap: wrap; }
-      nav { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
-    }
+    :root{--bg:#060510;--muted:#b6b4bf;--white:#ffffff;--accent:#7b4bff;--accent2:#6b2cff;--border: rgba(255,255,255,0.06)}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(180deg,#08040b 0%, #060612 70%);color:var(--white)}
+    .wrap{max-width:1200px;margin:18px auto;display:flex;min-height:84vh;border-radius:12px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6)}
+    .sidebar{width:280px;padding:22px;border-right:1px solid var(--border);background:linear-gradient(180deg, rgba(8,8,10,0.82), rgba(6,6,8,0.62))}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+    .logo{width:44px;height:44px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#041021;font-weight:900}
+    .menu{margin-top:10px;display:flex;flex-direction:column;gap:8px}
+    .menu button{background:transparent;border:1px solid transparent;color:var(--muted);padding:10px;border-radius:10px;text-align:left;cursor:pointer;font-weight:700}
+    .menu button.active{background:linear-gradient(90deg, rgba(107,44,255,0.14), rgba(123,75,255,0.06));color:var(--white);border:1px solid rgba(107,44,255,0.10)}
+    .main{flex:1;padding:48px 64px;display:flex;flex-direction:column;align-items:center;gap:28px}
+    .hero{width:100%;max-width:920px;text-align:center}
+    .glow{width:140px;height:140px;margin:0 auto 18px;border-radius:22px;display:grid;place-items:center;background:radial-gradient(circle at 30% 30%, rgba(123,75,255,0.12), transparent 40%);box-shadow:0 22px 80px rgba(107,44,255,0.08), inset 0 0 40px rgba(123,75,255,0.04)}
+    .glow img{width:110px;height:110px;object-fit:contain}
+    h1{font-size:clamp(2rem,4.5vw,3.8rem);margin:6px 0 8px;font-weight:900}
+    p.lead{color:var(--muted);margin:0 0 18px;max-width:780px;margin-left:auto;margin-right:auto}
+    .chips{display:flex;gap:12px;justify-content:center;margin-bottom:22px;flex-wrap:wrap}
+    .chip{padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,0.03);color:var(--muted);background:transparent;font-weight:700}
+    .search-box{width:100%;max-width:820px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);border-radius:28px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,0.55)}
+    .search-row{display:flex;gap:12px;align-items:center}
+    .search-row input{flex:1;padding:14px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--white);font-size:1rem}
+    .search-row button{background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;color:#041021;padding:12px 14px;border-radius:12px;font-weight:800;cursor:pointer}
+    .view{width:100%;max-width:920px}
+    .hidden{display:none}
+    .chat-panel{background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.04);border-radius:18px;padding:16px}
+    .chat-box{height:320px;overflow:auto;background:rgba(3,7,18,0.7);border:1px solid rgba(255,255,255,0.03);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px}
+    .msg{max-width:85%;padding:10px 12px;border-radius:12px;line-height:1.5}
+    .msg.user{background:rgba(62,198,255,0.12);border:1px solid rgba(62,198,255,0.4);align-self:flex-end}
+    .msg.bot{background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);align-self:flex-start}
+    .muted{color:var(--muted)}
+    @media (max-width:900px){.wrap{flex-direction:column}.sidebar{width:100%;display:flex;flex-direction:row;gap:12px;overflow:auto;padding:14px}.main{padding:24px}.glow{width:96px;height:96px}.glow img{width:72px;height:72px}}
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header>
-      <div class="brand">
-        <div class="logo">AI</div>
-        <div>IA Clost</div>
-      </div>
-      <nav>
-        <button class="pill">Chat</button>
-        <button class="pill">Imágenes</button>
-        <button class="pill primary">Probar ahora</button>
+  <div class="wrap" role="main">
+    <aside class="sidebar" aria-label="menu">
+      <div class="brand"><div class="logo">AI</div><div><strong>Clost AI</strong></div></div>
+      <nav class="menu" aria-label="herramientas">
+        <button id="menu-lobby" class="active">Lobby</button>
+        <button id="menu-chat">Chat</button>
+        <button id="menu-translate">Traductor</button>
+        <button id="menu-analyze">Analizar foto</button>
+        <button id="menu-generate">Generar imágenes</button>
+        <button id="menu-help">Ayuda</button>
       </nav>
-    </header>
+      <div style="margin-top:18px;color:var(--muted);font-size:13px">Historial — Uso de hoy: Texto 1/80 · Búsquedas 1/30 · Imágenes 4/8</div>
+    </aside>
 
-    <main>
-      <section class="hero">
-        <div class="hero-copy">
-          <h1>Chat con IA, imágenes y panel de uso en una sola app.</h1>
-          <p>
-            Un sitio moderno para probar un chat con IA, generar imágenes, gestionar cuotas por usuario y dejar listo un panel de administración para cambiar precios, colores y límites.
-          </p>
-          <div class="hero-actions">
-            <button class="btn primary" id="start-chat">Probar chat</button>
-            <button class="btn secondary" id="start-image">Generar imagen</button>
+    <section class="main">
+      <div id="view-lobby" class="view">
+        <div class="hero">
+          <div class="glow"><img src="assets/planet.svg" alt="planeta"/></div>
+          <h1>Hola, ¿qué quieres saber?</h1>
+          <p class="lead">Respuestas actualizadas y consultas rápidas. Usa el buscador o prueba el chat directamente.</p>
+          <div class="chips"><div class="chip">Noticias de tecnología</div><div class="chip">¿Qué tiempo hará hoy?</div></div>
+
+          <div class="search-box">
+            <div style="color:var(--muted);margin-bottom:8px">¿Qué quieres preguntar?</div>
+            <div class="search-row">
+              <input id="lobby-query" placeholder="Escribe tu pregunta..." aria-label="pregunta"/>
+              <button id="lobby-send" aria-label="enviar">→</button>
+            </div>
           </div>
         </div>
+      </div>
 
-        <div class="card">
-          <div class="stats">
-            <div class="stat"><b>5</b><span>chats anónimos</span></div>
-            <div class="stat"><b>3</b><span>imágenes anónimas</span></div>
-            <div class="stat"><b>10</b><span>chats logueado</span></div>
-          </div>
-          <div class="quota-box" style="margin-top:14px;">
-            <strong>Regla de uso</strong>
-            <ul>
-              <li>Sin iniciar sesión: 5 chats y 3 imágenes al día.</li>
-              <li>Con sesión: 10 chats y 6 imágenes al día.</li>
-              <li>Bonus al entrar: +10 chats y +3 imágenes.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="grid">
-        <div class="panel">
+      <div id="view-chat" class="view hidden">
+        <div class="chat-panel">
           <h3>Chat con IA</h3>
-          <div class="chat-box" id="chat-box">
-            <div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div>
-          </div>
+          <div class="chat-box" id="chat-box"><div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div></div>
           <textarea id="chat-input" rows="4" placeholder="Escribe tu pregunta o pide ayuda..."></textarea>
-          <div class="row">
-            <button class="btn primary" id="send-chat">Enviar</button>
-            <button class="btn secondary" id="clear-chat">Limpiar</button>
+          <div style="display:flex;gap:10px;margin-top:12px">
+            <button id="send-chat" style="background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;padding:10px 14px;border-radius:12px;font-weight:700;color:#041021;">Enviar</button>
+            <button id="clear-chat" style="background:transparent;border:1px solid rgba(255,255,255,0.03);color:var(--muted);padding:10px 14px;border-radius:12px;">Limpiar</button>
           </div>
         </div>
+      </div>
 
-        <div class="mini-grid">
-          <div class="panel">
-            <h3>Generar imagen</h3>
-            <input id="image-prompt" type="text" placeholder="Describe la imagen que quieras crear..." />
-            <div class="row">
-              <button class="btn primary" id="generate-image">Generar</button>
-            </div>
-            <div class="quota-box" id="image-quota-box">
-              <strong>Cuota</strong>
-              <div class="muted" id="image-counter">0 / 3 imágenes</div>
-            </div>
-          </div>
+      <div id="view-translate" class="view hidden">
+        <div class="chat-panel"><h3>Traductor</h3><textarea id="translate-input" rows="4" placeholder="Escribe el texto a traducir..."></textarea><div style="display:flex;gap:10px;margin-top:12px"><button id="do-translate" style="background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;padding:10px 14px;border-radius:12px;font-weight:700;color:#041021;">Traducir</button></div><div id="translate-output" style="margin-top:12px;color:var(--muted)">Salida de traducción aquí</div></div>
+      </div>
 
-          <div class="panel">
-            <h3>Vista previa</h3>
-            <div class="image-preview" id="image-preview">Sin imagen aún</div>
-          </div>
-        </div>
-      </section>
-    </main>
+      <div id="view-analyze" class="view hidden">
+        <div class="chat-panel"><h3>Analizar foto</h3><input type="file" id="analyze-file" accept="image/*"/><div id="analyze-result" style="margin-top:12px;color:var(--muted)">Sube una imagen para analizarla.</div></div>
+      </div>
+
+      <div id="view-generate" class="view hidden">
+        <div class="chat-panel"><h3>Generar imágenes</h3><input id="image-prompt" type="text" placeholder="Describe la imagen que quieras crear..."/><div style="display:flex;gap:10px;margin-top:12px"><button id="generate-image" style="background:linear-gradient(90deg,var(--accent),var(--accent2));border:none;padding:10px 14px;border-radius:12px;font-weight:700;color:#041021;">Generar</button></div><div id="image-preview" style="margin-top:12px;color:var(--muted)">Sin imagen aún</div></div>
+      </div>
+
+      <div id="view-help" class="view hidden"><div class="chat-panel"><h3>Ayuda</h3><p style="color:var(--muted)">Si algo no funciona, recarga la página o revisa la configuración de GitHub Pages. Puedo aplicar cambios si me invitas como colaborador.</p></div></div>
+
+    </section>
   </div>
 
   <script>
-    const chatBox = document.getElementById('chat-box');
-    const chatInput = document.getElementById('chat-input');
-    const imagePrompt = document.getElementById('image-prompt');
-    const imagePreview = document.getElementById('image-preview');
-    const imageCounter = document.getElementById('image-counter');
-    const limits = { anon: { chats: 5, images: 3 }, authenticated: { chats: 10, images: 6 }, bonus: { chats: 10, images: 3 } };
-    const stateKey = 'ia-clost-usage';
+    // Router
+    const views={'menu-lobby':'view-lobby','menu-chat':'view-chat','menu-translate':'view-translate','menu-analyze':'view-analyze','menu-generate':'view-generate','menu-help':'view-help'};
+    function setActive(id){document.querySelectorAll('.menu button').forEach(b=>b.classList.remove('active'));const btn=document.getElementById(id);if(btn)btn.classList.add('active');Object.values(views).forEach(v=>document.getElementById(v).classList.add('hidden'));const vid=views[id];if(vid)document.getElementById(vid).classList.remove('hidden');}
+    Object.keys(views).forEach(mid=>{const b=document.getElementById(mid);if(b)b.addEventListener('click',()=>setActive(mid));});
 
-    function readState() {
-      const raw = localStorage.getItem(stateKey);
-      return raw ? JSON.parse(raw) : { chats: 0, images: 0, started: false };
-    }
+    // Chat behaviour + integration with serverless function (Netlify) with fallback mock
+    const chatBox=document.getElementById('chat-box');const chatInput=document.getElementById('chat-input');const sendChat=document.getElementById('send-chat');const clearChat=document.getElementById('clear-chat');
+    function addMessage(role,text){const n=document.createElement('div');n.className='msg '+role;n.textContent=text;chatBox.appendChild(n);chatBox.scrollTop=chatBox.scrollHeight}
 
-    function writeState(next) {
-      localStorage.setItem(stateKey, JSON.stringify(next));
-    }
-
-    function hasLogin() {
-      return !!localStorage.getItem('ia-clost-login');
-    }
-
-    function getCurrentLimits() {
-      return hasLogin() ? limits.authenticated : limits.anon;
-    }
-
-    function updateImageCounter() {
-      const state = readState();
-      const current = getCurrentLimits();
-      imageCounter.textContent = `${state.images} / ${current.images} imágenes`;
-    }
-
-    function addMessage(role, text) {
-      const node = document.createElement('div');
-      node.className = `msg ${role}`;
-      node.textContent = text;
-      chatBox.appendChild(node);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    document.getElementById('start-chat').addEventListener('click', () => {
-      chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      chatInput.focus();
-    });
-
-    document.getElementById('start-image').addEventListener('click', () => {
-      imagePrompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      imagePrompt.focus();
-    });
-
-    document.getElementById('send-chat').addEventListener('click', () => {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-      const state = readState();
-      const current = getCurrentLimits();
-      if (state.chats >= current.chats) {
-        addMessage('bot', 'Has alcanzado tu límite de chats. Inicia sesión para desbloquear más mensajes.');
-        return;
+    async function callBackend(message){
+      try{
+        const res=await fetch('/.netlify/functions/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message})});
+        if(!res.ok){const txt=await res.text();throw new Error(txt||'Error en backend');}
+        const j=await res.json();return j.reply||j.output||j.text||'';
+      }catch(e){
+        console.warn('Backend failed, falling back to local mock:',e.message);
+        // fallback: simple echo + guidance
+        return 'Respuesta (modo local): He recibido "'+message+'". Para respuestas reales añade una clave OpenAI y despliega la función.';
       }
-      addMessage('user', msg);
-      chatInput.value = '';
-      state.chats += 1;
-      writeState(state);
-      addMessage('bot', `He recibido: “${msg}”. Este ejemplo está listo para conectarse a una API real de IA. Puedes cambiarlo luego por OpenAI o cualquier proveedor.`);
-    });
+    }
 
-    document.getElementById('clear-chat').addEventListener('click', () => {
-      chatBox.innerHTML = '<div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div>';
-    });
+    if(sendChat)sendChat.addEventListener('click',async ()=>{const m=chatInput.value.trim();if(!m)return;addMessage('user',m);chatInput.value='';addMessage('bot','Escribiendo...');const reply=await callBackend(m); // remove the last 'Escribiendo...' and append reply
+      // remove last bot placeholder
+      const botPlaceholders=document.querySelectorAll('.msg.bot');const lastBot=botPlaceholders[botPlaceholders.length-1];if(lastBot && lastBot.textContent==='Escribiendo...'){lastBot.textContent=reply;}else{addMessage('bot',reply);} });
 
-    document.getElementById('generate-image').addEventListener('click', () => {
-      const prompt = imagePrompt.value.trim();
-      if (!prompt) return;
-      const state = readState();
-      const current = getCurrentLimits();
-      if (state.images >= current.images) {
-        imagePreview.innerHTML = '<div class="muted">Has alcanzado el límite de imágenes. Inicia sesión para obtener más.</div>';
-        return;
-      }
-      imagePreview.innerHTML = '<div class="muted">Generando imagen...</div>';
-      state.images += 1;
-      writeState(state);
-      updateImageCounter();
-      const faux = `https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80`;
-      imagePreview.innerHTML = `<img src="${faux}" alt="${prompt}" />`;
-    });
+    if(clearChat)clearChat.addEventListener('click',()=>{chatBox.innerHTML='<div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div>';});
 
-    updateImageCounter();
+    // Lobby quick send
+    const lobbyQuery=document.getElementById('lobby-query');const lobbySend=document.getElementById('lobby-send');if(lobbySend)lobbySend.addEventListener('click',()=>{const q=lobbyQuery.value.trim();if(!q)return;setActive('menu-chat');setTimeout(()=>{chatInput.value=q;sendChat.click();},150);});
+
+    // Translate placeholder
+    const doTranslate=document.getElementById('do-translate');if(doTranslate)doTranslate.addEventListener('click',()=>{const t=document.getElementById('translate-input').value.trim();if(!t)return;document.getElementById('translate-output').textContent='Traducción (ejemplo): '+t.split('').reverse().join('');});
+
+    // Analyze placeholder
+    const analyzeFile=document.getElementById('analyze-file');if(analyzeFile)analyzeFile.addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;document.getElementById('analyze-result').textContent='Archivo listo: '+f.name+' (análisis de ejemplo).';});
+
+    // Generate placeholder
+    const genBtn=document.getElementById('generate-image');if(genBtn)genBtn.addEventListener('click',()=>{const p=document.getElementById('image-prompt').value.trim();if(!p)return;const prev=document.getElementById('image-preview');prev.textContent='Generando imagen de ejemplo...';setTimeout(()=>{prev.innerHTML='<img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=60" style="max-width:100%;border-radius:8px" alt="generated"/>';},900);});
+
+    // initial
+    setActive('menu-lobby');
   </script>
 </body>
 </html>
