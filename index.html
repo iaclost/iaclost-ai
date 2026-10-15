@@ -1,289 +1,38 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>IA Clost</title>
-  <meta name="description" content="Chat con IA, generador de imágenes y panel de administración." />
-  <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #121b2d;
-      --panel-2: #18253d;
-      --text: #edf2ff;
-      --muted: #a4b0c4;
-      --accent: #3ec6ff;
-      --accent-2: #8b5cf6;
-      --success: #3dd598;
-      --danger: #ff5e7d;
-      --border: rgba(255,255,255,0.08);
-      --shadow: 0 15px 35px rgba(0,0,0,0.25);
-    }
+  <nav class="menu" aria-label="herramientas">
+    <button>Chat</button>
+    <button>Traductor</button>
+    <button>Analizar foto</button>
+    <button>Generar imágenes</button>
+    <button class="active">Lobby</button>
+    <button>Ayuda</button>
+  </nav>
 
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background: linear-gradient(180deg, #09111d, #0e1729 25%, #0d1420); color: var(--text); }
-    body { padding: 28px; }
-    a { color: var(--accent); }
-    .shell {
-      max-width: 1100px; margin: 0 auto;
-      background: rgba(10,16,28,0.9); border: 1px solid var(--border); border-radius: 24px; box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-    header {
-      display: flex; align-items: center; justify-content: space-between; gap: 18px;
-      padding: 22px 26px; border-bottom: 1px solid var(--border);
-      background: rgba(255,255,255,0.02);
-    }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: 0.02em; }
-    .logo {
-      width: 38px; height: 38px; border-radius: 12px; display: grid; place-items: center;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #04111d; font-weight: 900;
-    }
-    nav { display: flex; gap: 12px; align-items: center; }
-    .pill {
-      border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--text);
-      padding: 10px 14px; border-radius: 999px; font-weight: 600; cursor: pointer;
-    }
-    .pill.primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #04111d; border: none;
-    }
-    main { padding: 28px 26px 40px; }
-    .hero {
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; align-items: center;
-      margin-bottom: 30px;
-    }
-    .hero-copy h1 {
-      margin: 0 0 16px; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.08; letter-spacing: -0.05em;
-    }
-    .hero-copy p { color: var(--muted); font-size: 1.05rem; line-height: 1.7; max-width: 600px; }
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-    .card {
-      background: linear-gradient(180deg, rgba(22,31,47,0.96), rgba(18,27,45,0.96));
-      border: 1px solid var(--border); border-radius: 18px; padding: 20px; box-shadow: var(--shadow);
-    }
-    .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-    .stat { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
-    .stat b { display: block; font-size: 1.6rem; margin-bottom: 4px; }
-    .stat span { color: var(--muted); font-size: 0.92rem; }
+  <div class="small">Historial — 1/80 • Búsquedas 1/30</div>
+</aside>
 
-    .grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px; margin-top: 28px; }
-    .panel { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 18px; padding: 18px; }
-    .panel h3 { margin: 0 0 14px; }
-    .chat-box {
-      height: 260px; overflow: auto; background: rgba(3,7,18,0.7); border: 1px solid var(--border); border-radius: 12px; padding: 14px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .msg { max-width: 85%; padding: 10px 12px; border-radius: 12px; line-height: 1.5; }
-    .msg.user { background: rgba(62,198,255,0.12); border: 1px solid rgba(62,198,255,0.4); align-self: flex-end; }
-    .msg.bot { background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.35); align-self: flex-start; }
-    textarea, input[type=text] {
-      width: 100%; border: 1px solid var(--border); background: rgba(8,12,20,0.78); color: var(--text); border-radius: 12px; padding: 12px 14px; margin-top: 12px; font: inherit;
-    }
-    .row { display: flex; gap: 10px; margin-top: 12px; }
-    .btn {
-      border: none; cursor: pointer; padding: 11px 16px; border-radius: 12px; font-weight: 700; font: inherit;
-    }
-    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #03111d; }
-    .btn.secondary { background: rgba(255,255,255,0.03); color: var(--text); border: 1px solid var(--border); }
-    .quota-box {
-      border: 1px dashed rgba(255,255,255,0.18); border-radius: 12px; padding: 16px; background: rgba(255,255,255,0.02);
-      margin-top: 12px;
-    }
-    ul { margin: 10px 0 0 18px; color: var(--muted); line-height: 1.7; }
-    .mini-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
-    .image-preview { min-height: 180px; border: 1px solid var(--border); border-radius: 14px; background: linear-gradient(135deg, rgba(62,198,255,0.1), rgba(139,92,246,0.1)); display: grid; place-items: center; color: var(--muted); }
-    .image-preview img { max-width: 100%; border-radius: 12px; max-height: 240px; object-fit: cover; }
-    .muted { color: var(--muted); }
-    @media (max-width: 860px) {
-      body { padding: 16px; }
-      .hero, .grid { grid-template-columns: 1fr; }
-      header { flex-wrap: wrap; }
-      nav { width: 100%; justify-content: flex-start; flex-wrap: wrap; }
-    }
-  </style>
-</head>
-<body>
-  <div class="shell">
-    <header>
-      <div class="brand">
-        <div class="logo">AI</div>
-        <div>IA Clost</div>
+<section class="main">
+  <div class="hero" aria-hidden="false">
+    <div class="glow-wrap" aria-hidden="true">
+      <!-- imagen central: usa assets/planet.png -->
+      <div class="icon">
+        <img src="assets/planet.png" alt="planeta" style="width:48px;height:48px;object-fit:contain"/>
       </div>
-      <nav>
-        <button class="pill">Chat</button>
-        <button class="pill">Imágenes</button>
-        <button class="pill primary">Probar ahora</button>
-      </nav>
-    </header>
+    </div>
 
-    <main>
-      <section class="hero">
-        <div class="hero-copy" style="text-align:center;padding:10px 20px;">
-  <div style="display:flex;justify-content:center;align-items:center;margin:18px 0;">
-    <img src="assets/planet.png" alt="Planeta" style="width:180px;max-width:36vw;border-radius:12px;box-shadow:0 12px 40px rgba(0,0,0,0.6);">
+    <h1>Hola, ¿qué quieres saber?</h1>
+    <p>Respuestas actualizadas y útiles — comprueba siempre la información.</p>
+
+    <div class="chips" role="list">
+      <div class="chip">Noticias de tecnología</div>
+      <div class="chip">¿Qué tiempo hará hoy?</div>
+    </div>
+
+    <div class="search-box" aria-label="buscador">
+      <div style="color:var(--muted);margin-bottom:8px">¿Qué quieres preguntar?</div>
+      <div class="search-row">
+        <input placeholder="Escribe tu pregunta..." aria-label="pregunta"/>
+        <button aria-label="enviar">→</button>
+      </div>
+    </div>
   </div>
-
-  <h1 style="margin: 12px 0 10px; font-size:clamp(2.8rem,5vw,4rem); line-height:1.04; font-weight:800; color:var(--text);">
-    Buscar en internet
-  </h1>
-
-  <p style="margin:0 auto 20px; color:var(--muted); max-width:780px; font-size:1.05rem; line-height:1.5;">
-    Respuestas actualizadas con enlaces a las fuentes consultadas.
-  </p>
-
-  <div class="hero-actions" style="display:flex;gap:12px;justify-content:center;margin-top:16px;">
-    <button class="btn secondary" style="padding:10px 18px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);">Noticias de tecnología de esta semana</button>
-    <button class="btn secondary" style="padding:10px 18px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text);">¿Qué tiempo hará mañana en Madrid?</button>
-  </div>
-</div>
-          <h1>Chat con IA, imágenes y panel de uso en una sola app.</h1>
-          <p>
-            Un sitio moderno para probar un chat con IA, generar imágenes, gestionar cuotas por usuario y dejar listo un panel de administración para cambiar precios, colores y límites.
-          </p>
-          <div class="hero-actions">
-            <button class="btn primary" id="start-chat">Probar chat</button>
-            <button class="btn secondary" id="start-image">Generar imagen</button>
-          </div>
-        <div class="card">
-          <div class="stats">
-            <div class="stat"><b>5</b><span>chats anónimos</span></div>
-            <div class="stat"><b>3</b><span>imágenes anónimas</span></div>
-            <div class="stat"><b>10</b><span>chats logueado</span></div>
-          </div>
-          <div class="quota-box" style="margin-top:14px;">
-            <strong>Regla de uso</strong>
-            <ul>
-              <li>Sin iniciar sesión: 5 chats y 3 imágenes al día.</li>
-              <li>Con sesión: 10 chats y 6 imágenes al día.</li>
-              <li>Bonus al entrar: +10 chats y +3 imágenes.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section class="grid">
-        <div class="panel">
-          <h3>Chat con IA</h3>
-          <div class="chat-box" id="chat-box">
-            <div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div>
-          </div>
-          <textarea id="chat-input" rows="4" placeholder="Escribe tu pregunta o pide ayuda..."></textarea>
-          <div class="row">
-            <button class="btn primary" id="send-chat">Enviar</button>
-            <button class="btn secondary" id="clear-chat">Limpiar</button>
-          </div>
-        </div>
-
-        <div class="mini-grid">
-          <div class="panel">
-            <h3>Generar imagen</h3>
-            <input id="image-prompt" type="text" placeholder="Describe la imagen que quieras crear..." />
-            <div class="row">
-              <button class="btn primary" id="generate-image">Generar</button>
-            </div>
-            <div class="quota-box" id="image-quota-box">
-              <strong>Cuota</strong>
-              <div class="muted" id="image-counter">0 / 3 imágenes</div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3>Vista previa</h3>
-            <div class="image-preview" id="image-preview">Sin imagen aún</div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <script>
-    const chatBox = document.getElementById('chat-box');
-    const chatInput = document.getElementById('chat-input');
-    const imagePrompt = document.getElementById('image-prompt');
-    const imagePreview = document.getElementById('image-preview');
-    const imageCounter = document.getElementById('image-counter');
-    const limits = { anon: { chats: 5, images: 3 }, authenticated: { chats: 10, images: 6 }, bonus: { chats: 10, images: 3 } };
-    const stateKey = 'ia-clost-usage';
-
-    function readState() {
-      const raw = localStorage.getItem(stateKey);
-      return raw ? JSON.parse(raw) : { chats: 0, images: 0, started: false };
-    }
-
-    function writeState(next) {
-      localStorage.setItem(stateKey, JSON.stringify(next));
-    }
-
-    function hasLogin() {
-      return !!localStorage.getItem('ia-clost-login');
-    }
-
-    function getCurrentLimits() {
-      return hasLogin() ? limits.authenticated : limits.anon;
-    }
-
-    function updateImageCounter() {
-      const state = readState();
-      const current = getCurrentLimits();
-      imageCounter.textContent = `${state.images} / ${current.images} imágenes`;
-    }
-
-    function addMessage(role, text) {
-      const node = document.createElement('div');
-      node.className = `msg ${role}`;
-      node.textContent = text;
-      chatBox.appendChild(node);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
-
-    document.getElementById('start-chat').addEventListener('click', () => {
-      chatInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      chatInput.focus();
-    });
-
-    document.getElementById('start-image').addEventListener('click', () => {
-      imagePrompt.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      imagePrompt.focus();
-    });
-
-    document.getElementById('send-chat').addEventListener('click', () => {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-      const state = readState();
-      const current = getCurrentLimits();
-      if (state.chats >= current.chats) {
-        addMessage('bot', 'Has alcanzado tu límite de chats. Inicia sesión para desbloquear más mensajes.');
-        return;
-      }
-      addMessage('user', msg);
-      chatInput.value = '';
-      state.chats += 1;
-      writeState(state);
-      addMessage('bot', `He recibido: “${msg}”. Este ejemplo está listo para conectarse a una API real de IA. Puedes cambiarlo luego por OpenAI o cualquier proveedor.`);
-    });
-
-    document.getElementById('clear-chat').addEventListener('click', () => {
-      chatBox.innerHTML = '<div class="msg bot">Hola, soy tu asistente IA. ¿Qué quieres hacer hoy?</div>';
-    });
-
-    document.getElementById('generate-image').addEventListener('click', () => {
-      const prompt = imagePrompt.value.trim();
-      if (!prompt) return;
-      const state = readState();
-      const current = getCurrentLimits();
-      if (state.images >= current.images) {
-        imagePreview.innerHTML = '<div class="muted">Has alcanzado el límite de imágenes. Inicia sesión para obtener más.</div>';
-        return;
-      }
-      imagePreview.innerHTML = '<div class="muted">Generando imagen...</div>';
-      state.images += 1;
-      writeState(state);
-      updateImageCounter();
-      const faux = `https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1200&q=80`;
-      imagePreview.innerHTML = `<img src="${faux}" alt="${prompt}" />`;
-    });
-
-    updateImageCounter();
-  </script>
-</body>
-</html>
+</section>
