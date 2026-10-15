@@ -1,0 +1,5 @@
+Deploy trigger file
+
+This file was added to force a GitHub Actions deploy of the static site (publish ./public to GitHub Pages).
+
+Timestamp: 2026-10-15T20:52:00Z
