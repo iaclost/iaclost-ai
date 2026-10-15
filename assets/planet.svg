@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="planet icon">
+  <defs>
+    <radialGradient id="g" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#e8f1ff"/>
+      <stop offset="40%" stop-color="#dfe9ff"/>
+      <stop offset="100%" stop-color="#b9c7ff"/>
+    </radialGradient>
+  </defs>
+  <circle cx="100" cy="100" r="80" fill="url(#g)"/>
+  <circle cx="100" cy="100" r="42" fill="none" stroke="#7b4bff" stroke-width="7"/>
+  <path d="M100 24 L100 176 M24 100 L176 100 M43 46 L157 154 M157 46 L43 154" stroke="#7b4bff" stroke-width="4" stroke-linecap="round" opacity="0.7"/>
+</svg>
