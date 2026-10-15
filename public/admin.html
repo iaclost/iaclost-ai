@@ -1,0 +1,41 @@
+<!-- public/admin.html -->
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin — IA Clost</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <header>
+    <h1>Admin — IA Clost</h1>
+    <div id="auth-area">
+      <button id="login-btn">Iniciar sesión</button>
+      <button id="logout-btn" style="display:none">Cerrar sesión</button>
+      <span id="user-email" style="margin-left:12px"></span>
+    </div>
+  </header>
+  <main>
+    <section id="admin-section" style="display:none">
+      <h2>Configuración del sitio</h2>
+      <label>Color primario: <input id="cfg-primary" type="color"></label><br>
+      <label>Fondo: <input id="cfg-bg" type="color"></label><br>
+      <h3>Límites</h3>
+      <label>Anónimo - Chats: <input id="cfg-anon-chats" type="number" min="0"></label>
+      <label>Anónimo - Imágenes: <input id="cfg-anon-img" type="number" min="0"></label>
+      <br>
+      <label>Autenticado - Chats: <input id="cfg-auth-chats" type="number" min="0"></label>
+      <label>Autenticado - Imágenes: <input id="cfg-auth-img" type="number" min="0"></label>
+      <br>
+      <button id="save-settings">Guardar</button>
+      <div id="save-result"></div>
+    </section>
+    <section id="not-admin" style="display:none">
+      <p>No tienes permisos para ver esta página.</p>
+    </section>
+  </main>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
